@@ -42,11 +42,12 @@ pin(b);
 
 
 }
+pin(200);
 
-link(100,50);
+//link(100,50);
 
-translate([0,100,12])
-link(100,50);
+//translate([0,100,12])
+//link(100,50);
 
 
 module gripper_base(){
