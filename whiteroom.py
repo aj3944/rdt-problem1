@@ -17,25 +17,61 @@ position = [position[0],position[1],position[2]]
 
 
 
-mesh = []
+mesh_pin100 = []
+mesh_pin150 = []
+mesh_pin200 = []
 
 
-def loadStl():
-    global mesh
+def loadStl_pin100():
+    global mesh_pin100
     with load('./stls/pin100.stl') as scene:
         assert len(scene.meshes)
-        mesh = scene.meshes[0]
+        mesh_pin100 = scene.meshes[0]
 
-def renderStl():
+def renderStl_pin100():
         glBegin(GL_LINES); 
-        for v in mesh.vertices:
+        for v in mesh_pin100.vertices:
           glVertex3fv(v);      
-        glEnd();    
-loadStl();
+        glEnd(); 
 
 
-print(len(mesh.vertices))
-print(mesh.vertices)    
+
+
+def loadStl_pin150():
+    global mesh_pin150
+    with load('./stls/pin150.stl') as scene:
+        assert len(scene.meshes)
+        mesh_pin150 = scene.meshes[0]
+
+def renderStl_pin150():
+        glBegin(GL_LINES); 
+        for v in mesh_pin150.vertices:
+          glVertex3fv(v);      
+        glEnd(); 
+
+
+
+
+def loadStl_pin200():
+    global mesh_pin200
+    with load('./stls/pin200.stl') as scene:
+        assert len(scene.meshes)
+        mesh_pin200 = scene.meshes[0]
+
+def renderStl_pin200():
+        glBegin(GL_LINES); 
+        for v in mesh_pin200.vertices:
+          glVertex3fv(v);      
+        glEnd(); 
+
+
+loadStl_pin100();
+loadStl_pin150();
+loadStl_pin200();
+
+
+# print(len(mesh.vertices))
+# print(mesh.vertices)    
 # print(dir(stl_pin100.mesh));
 # print(stl_pin100.args.count);
 # print(stl_pin100.kwds.values);
@@ -99,7 +135,8 @@ thread_len1 = 1;
 thread_len2 = 1;
 
 
-
+def renderStl(model_name):
+    return eval("renderStl" + "_" + model_name + "()");
 # import numpy as np
 class Gripper(object):
     def __init__(self):
@@ -110,14 +147,31 @@ class Gripper(object):
         # ]
         self.joints = []
         self.constraints = []
-    def make_gripper(self):
+    def make_gripper(self,Mount_rotation,init_pos,init_rotation):
         global mesh
         # j1
         sections = [
-            (-0,10,100),
+            (-0,10,200),
+            (-0,10,150),
+            (-0,10,150),
             (-0,10,100),
         ]
         n = 90*math.pi/180;
+
+        # glPushMatrix()
+
+
+        glRotatef(Mount_rotation,0,0,1)
+        glTranslatef(50,0,0)
+        # w2, v2 = init_rotation.get_axisangle()
+        # w2_degrees = w2*180/math.pi   
+
+        # # j2
+        # glPushMatrix()
+        # glTranslatef(init_pos[0],init_pos[1],init_pos[2])
+        # glRotatef(w2_degrees,v2[0],v2[1],v2[2])
+
+
 
         rotation_PI2X = qt.from_axisangle(n,(1,0,0))
         rotation_PI2Y = qt.from_axisangle(n,(0,1,0))
@@ -127,9 +181,8 @@ class Gripper(object):
         rotation_J2 = qt.from_axisangle(thread_len2,(0,1,0))
         rotation_J2 = rotation_J1._multiply_with_quaternion(rotation_J2);
 
-
-        # rotation_PI2X = rotation_PI2X*rotation_PI2Z
         rotation_PI2X = rotation_PI2X*rotation_PI2Z
+
 
         xa, xv = rotation_PI2X.get_axisangle()
         x_degrees = xa*180/math.pi
@@ -139,37 +192,41 @@ class Gripper(object):
         z_degrees = za*180/math.pi
 
 
-        w1, v1 = rotation_J1.get_axisangle()
-        w1_degrees = w1*180/math.pi
-        w2, v2 = rotation_J2.get_axisangle()
-        w2_degrees = w2*180/math.pi   
+        k = 2 # 
 
+        j_pos = [0,0,0]
 
-        glPushMatrix()
+        rotation_J = []
+        for i in range(len(sections)):
+            rotation_Jn = qt.from_axisangle(thread_len1*k/(k + i),(0,1,0))
+            rotation_J.append(rotation_Jn)
 
-        # glRotatef(w1_degrees,v1[0],v1[1],v1[2])
-        glTranslatef(sections[0][0]/2,sections[0][1]/2,0)
-        # glScalef(*sections[0])
-        # glutWireCube(1.);
-        # glPopMatrix()
+        # rotation_J.append(rotation_Jn)
+        # glPopMatrix();
 
-        glRotatef(w1_degrees,v1[0],v1[1],v1[2])
-        glRotatef(x_degrees,xv[0],xv[1],xv[2])
-        renderStl();
-        glPopMatrix();
+        rotation_CURR = rotation_J[0];
 
-        j2_pos = rotation_J1*sections[0]
-        # j2
-        glPushMatrix()
-        glTranslatef(j2_pos[0],j2_pos[1],j2_pos[2])
-        glRotatef(w2_degrees,v2[0],v2[1],v2[2])
-        glTranslatef(sections[1][0]/2,sections[1][1]/2,0)
-        # glScalef(*sections[1])
-        # glutWireCube(1.);
-        glRotatef(x_degrees,xv[0],xv[1],xv[2])
-        renderStl();
-        glPopMatrix()
+        for i in range(len(sections)):
 
+            w2, v2 = rotation_CURR.get_axisangle()
+            w2_degrees = w2*180/math.pi   
+
+            # j2
+            glPushMatrix()
+            glTranslatef(j_pos[0],j_pos[1],j_pos[2])
+            glRotatef(w2_degrees,v2[0],v2[1],v2[2])
+            glTranslatef(sections[i][0]/2,sections[i][1]/2,0)
+
+            glRotatef(x_degrees,xv[0],xv[1],xv[2]);
+            renderStl("pin" + str(sections[i][2]));
+            glPopMatrix()
+            
+
+            j_pos = j_pos + rotation_CURR*sections[i]
+            rotation_CURR = rotation_J[i]._multiply_with_quaternion(rotation_CURR);
+            # j2_pos = j2_pos + rotation_J[i]*sections[i]
+
+        # glPopMatrix();
         # 
 
     def makeContactPad():
@@ -203,20 +260,29 @@ gp1 = Gripper();
 
 
 
+rotation_PIby4 = qt.from_axisangle(0,(1,0,0))
 
 
 
 _CELESTIAL_SPHERE_ = Thing(glutWireSphere,(.1,20,20))
 
 
-_BOT_GRABBER_ = Thing(gp1.make_gripper,[]);
+# _BOT_GRABBER_1 = Thing(gp1.make_gripper,[0]);
 
 SCENE_1 = Scene()
 
 
 
 # SCENE_1.add_object(_CELESTIAL_SPHERE_)
-SCENE_1.add_object(_BOT_GRABBER_)
+# SCENE_1.add_object(_BOT_GRABBER_)
+# SCENE_1.add_object(_BOT_GRABBER_1)
+
+glist = [ 0 , 90 , 180, 270 ]
+glist.extend([ 0  + 45, 90  + 45, 180 + 45, 270 + 45 ])
+
+for i in glist:     
+    _BOT_GRABBER_2 = Thing(gp1.make_gripper,[i,[100,100,100],rotation_PIby4]);
+    SCENE_1.add_object(_BOT_GRABBER_2)
 # SCENE_1.add_object(_CUBE_2)
 # SCENE_1.add_object(_PLANE_)
 

@@ -1,0 +1,40 @@
+I am very interested in unmanned vehicles and the problem statement for the NASA RMC 2024 is particularly interesting to me. The intersection of electronics, computer science, mechanical design and robotics really excites me.   
+
+
+I hope to learn how to solve real world problems in a power, space and weight constrained environment. I hope to understand the thought process behind designing such agents.
+
+
+Yes! I have previously worked with autonomous agents (albeit of a different nature), and I have a lot of real world experience to bring to the table. I have proficiency in soldering and mechanical assembly, with a good understanding of  'system design'. I also have many years of experience working with large and efficient C/C++ code bases which have been used for real time systems. 
+
+
+
+I am proud of a fixed wing VTOL craft that I designed, called Anne800 because of the 800mm wingspan. This was my first time working with compliant mechanisms and I was pleased with the way the final design turned out. I opted for a tail sitter VTOL configuration based on the Wingtra One. For the alerons I experimented with a fishtail design for the first time in my life. I was sure that I needed a higly parametric design and opted to use OpenSCAD to design the craft. The process of designing and experimenting with the compliant mechanism was very exiting to me, seeing how varying the number of slots/thickness of slots/ positioning changed the behaviour and stiffness of the mechanism. I am proud of this design because this is my first time designing a fixed wing craft and I had to overcome a lot of challenges to design it. Despite wanting to give up several times, I made it through and that makes me very happy.     
+
+
+
+
+
+//
+
+
+study 
+
+
+
+URDF
+
+
+Hello I am AJ3944. For the Robotics Design Team Application at NYU Tandon Bot Question I decided to opt for Q1. 
+
+The bot is inspired by turtle bot for locomation. It has a lipo battery and intel NUC for  path and vision. 
+
+
+The lifting mechanism is a crane which is mounted on top of the bot. We need a strong grip as we have to lift heavy boxes. 
+
+
+
+The gripping arm consists of segments which are connected using bio-inspired 3d printed joints.
+
+The arms terminate in rubble pads for better grip. For grip strength we use a self contained hydraulic system which works under pressure. 
+
+Htdraulic arm and cylnder provide counter weight to the box we are lifting. 

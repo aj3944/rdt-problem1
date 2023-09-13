@@ -4,6 +4,8 @@
 //design a bot to pick up a box and place it higher than it initially was
 
 
+include <./grabber.scad>
+
 // Bot Design
 //wheels
 module wheel(x,y,z,theta=0){
@@ -136,6 +138,9 @@ module lift_pin(x,z){
 
 
 module hydro_arm( r = 0){
+
+    translate([200,0,1100])
+    rotate([0,-90,0])
         color("green")
         {
             
@@ -153,8 +158,7 @@ module powertrain(){
     lift_arm();
 
 
-    translate([0,0,1120])
-    rotate([0,-90,0])
+
     hydro_arm(10);
 
     lift_pin(100,1030);
@@ -164,63 +168,31 @@ module powertrain(){
     lift_pin(-390,1030);
     lift_pin(-250,1030);
     lift_pin(-90,1030);
-}
 
 
 
-module gripper_base(){
-    translate([-150,0,-130])
-    color("green"){
-
-
-        // translate([-20,20,30])
-        // rotate([0,-60,0])
-        // cylinder(h = 100,r=6);
-        // translate([-100,20,90])
-        // rotate([0,60,0])
-        // cylinder(h = 100,r=6);
-        translate([-0,0,50])
-        rotate([0,-60,0])
-        cylinder(h = 100,r=6);
-        translate([-100,-10,110])
-        rotate([0,60,0])
-        cylinder(h = 100,r=6);
-        translate([-0,-0,30])
-        rotate([0,-60,0])
-        cylinder(h = 100,r=6);
-        translate([-100,-10,90])
-        rotate([0,60,0])
-        cylinder(h = 100,r=6);
-
-            
-        translate([10,0,50]){
-            translate([-10,0,0])
-            cylinder(h = 60,r=10,center=true);
-            cube([10,80,80],center=true);
-        }
+    translate([-420,0,500]){
+        lift_plate();
+        muiltigrip();
     }
-}
-module lift_plate(){
-    
-    cylinder(h=40,r=20);
-    cube([300,300,10],center=true);
-    
-    
-    gripper_base();
-    
-    
-    
+
+
+
 }
 
 
-lift_plate();
+lift_bot();
+powertrain();
+
+
+
 
 // World
 //box
 module box(){
     color("red")
-    translate([-600,-150,0])
-    cube([300,300,300]);
+    translate([-420,0,150])
+    rotate([0,0,40])
+    cube([300,300,300],center=true);
 }
-
 box();
